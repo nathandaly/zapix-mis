@@ -202,16 +202,26 @@ class TenancyServiceProvider extends ServiceProvider
         }
     }
 
-    protected function mapRoutes()
+    protected function mapRoutes(): void
     {
         $this->app->booted(function () {
-            if (file_exists(base_path('routes/tenant.php'))) {
-                RouteFacade::namespace(static::$controllerNamespace)
-                    ->middleware('tenant')
-                    ->group(base_path('routes/tenant.php'));
-            }
+            $tenantRouteFiles = glob(base_path('routes/tenant/*.php'));
 
-            // $this->cloneRoutes();
+            foreach ($tenantRouteFiles as $routeFile) {
+                if (file_exists($routeFile)) {
+                    $routeName = basename($routeFile, '.php');
+                    RouteFacade::namespace(static::$controllerNamespace)
+                        ->middleware([
+                            'web',
+                            Middleware\InitializeTenancyByDomain::class,
+                            Middleware\PreventAccessFromUnwantedDomains::class,
+                            Middleware\ScopeSessions::class,
+                        ])
+                        ->prefix("/tenant/$routeName")
+                        ->namespace(static::$controllerNamespace)
+                        ->group($routeFile);
+                }
+            }
         });
     }
 
