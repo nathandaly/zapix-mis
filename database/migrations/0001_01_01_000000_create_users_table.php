@@ -13,12 +13,23 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title')->nullable();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('display_name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->timestamp('last_login_at')->nullable();
+            $table->timestamp('hidden_at')->nullable();
+            $table->string('password')->nullable();
+            $table->uuid('legacy_uuid')->nullable();
+            $table->unsignedBigInteger('legacy_user_id')->nullable();
+            $table->unsignedBigInteger('legacy_company_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->timestamp('suspended_at')->nullable();
+            $table->timestamp('archived_at')->nullable();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
