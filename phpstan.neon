@@ -1,0 +1,72 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
+
+parameters:
+    # Analyze key directories
+    paths:
+        - app/
+        - config/
+        - database/factories/
+        - database/seeders/
+        - routes/
+        - tests/
+
+    # Level 6 is recommended for efficient development while catching most issues
+    # Level 6 includes: strict types, null checks, undefined methods/properties, etc.
+    level: 6
+
+    # Treat PHPDoc types as certain to reduce false positives
+    treatPhpDocTypesAsCertain: true
+
+    # Check for missing return type hints
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+
+    # Laravel-specific settings
+    checkModelProperties: true
+    checkOtherMethods: false
+
+    # Ignore common Laravel patterns that cause false positives
+    ignoreErrors:
+        # Ignore dynamic properties on models (Laravel's magic properties)
+        - identifier: missingType.generics
+          
+        # Ignore missing return types in migrations
+        - message: '#Method .* has no return type specified#'
+          path: database/migrations/*
+
+        # Ignore Livewire component properties
+        - message: '#Property .* has no type specified#'
+          path: app/Livewire/*
+
+        # Ignore dynamic method calls in tests
+        - message: '#Call to an undefined method#'
+          path: tests/*
+
+    # Exclude vendor and generated files
+    excludePaths:
+        - vendor/
+        - storage/
+        - bootstrap/cache/
+        - public/
+        - resources/views/errors/*
+        - database/migrations/*_create_*_table.php
+
+    # Parallel processing for faster analysis
+    parallel:
+        processTimeout: 300.0
+        maximumNumberOfProcesses: 4
+
+    # Report unmatched ignored errors
+    reportUnmatchedIgnoredErrors: false
+
+    # Useful for Laravel apps
+    universalObjectCratesClasses:
+        - Illuminate\Http\Request
+        - Illuminate\Support\Facades\Request
+
+    # Dynamic return type extensions for better Facade analysis
+    dynamicConstantNames:
+        - APP_ENV
+        - APP_DEBUG
