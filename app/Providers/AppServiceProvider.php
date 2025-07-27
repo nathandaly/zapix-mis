@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Hidehalo\Nanoid\Client;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Str::macro('nanoid', static function (int $size = 21, int $mode = Client::MODE_DYNAMIC): string {
+            return (new Client())->generateId($size, $mode);
+        });
     }
 }

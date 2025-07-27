@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('pm_last_four', 4)->nullable();
             $table->timestamp('trial_ends_at')->nullable();
 
-            // your custom columns may go here
+            $table->string('domain', 255)->unique();
 
             $table->timestamps();
             $table->json('data')->nullable();
