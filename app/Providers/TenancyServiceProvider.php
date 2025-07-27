@@ -171,7 +171,6 @@ class TenancyServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootEvents();
-        $this->mapRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
         $this->overrideUrlInTenantContext();
@@ -200,29 +199,6 @@ class TenancyServiceProvider extends ServiceProvider
                 Event::listen($event, $listener);
             }
         }
-    }
-
-    protected function mapRoutes(): void
-    {
-        $this->app->booted(function () {
-            $tenantRouteFiles = glob(base_path('routes/tenant/*.php'));
-
-            foreach ($tenantRouteFiles as $routeFile) {
-                if (file_exists($routeFile)) {
-                    $routeName = basename($routeFile, '.php');
-                    RouteFacade::namespace(static::$controllerNamespace)
-                        ->middleware([
-                            'web',
-                            Middleware\InitializeTenancyByDomain::class,
-                            Middleware\PreventAccessFromUnwantedDomains::class,
-                            Middleware\ScopeSessions::class,
-                        ])
-                        ->prefix("/tenant/$routeName")
-                        ->namespace(static::$controllerNamespace)
-                        ->group($routeFile);
-                }
-            }
-        });
     }
 
     /**
