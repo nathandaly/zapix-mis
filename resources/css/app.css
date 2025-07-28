@@ -55,10 +55,16 @@
     @apply  !mb-0 !leading-tight;
 }
 
+input[data-flux-control],
+textarea[data-flux-control],
+select[data-flux-control] {
+    @apply border-violet-400 dark:border-violet-600;
+}
+
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
-    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+    @apply outline-hidden ring-2 ring-violet-500 ring-offset-2 ring-offset-white dark:ring-offset-zinc-900 border-violet-500 dark:border-violet-400;
 }
 
 /* \[:where(&)\]:size-4 {
